@@ -55,33 +55,46 @@ io.on('connection', (socket) => {
     });
 
     socket.on('audio-chunk', async ({ sessionCode, audio, sourceLanguage, targetLanguage }) => {
+        console.log(`Received audio chunk for session ${sessionCode} from ${sourceLanguage} to ${targetLanguage}`);
         try {
-            // Audio chunk is expected to be a Buffer (from client's Wav encoder)
             const buffer = Buffer.from(audio);
+            console.log(`Audio buffer size: ${buffer.length} bytes`);
 
             // Pipeline Step 1: STT
+            console.log('Starting STT...');
             const transcript = await sarvamService.transcribe(buffer, sourceLanguage);
-            if (!transcript) return;
+            console.log('STT Transcript:', transcript);
 
-            // Pipeline Step 2: Emit partial transcript to reduce perceived latency
+            if (!transcript) {
+                console.log('No transcript received from STT.');
+                return;
+            }
+
+            // Pipeline Step 2: Emit partial transcript
             io.to(sessionCode).emit('partial-transcript', {
                 userId: socket.id,
                 transcript: transcript
             });
 
             // Pipeline Step 3: Translate
+            console.log(`Translating to ${targetLanguage}...`);
             const translatedText = await sarvamService.translate(transcript, sourceLanguage, targetLanguage);
+            console.log('Translated Text:', translatedText);
 
             // Pipeline Step 4: TTS
+            console.log('Starting TTS...');
             const audioContent = await sarvamService.synthesize(translatedText, targetLanguage);
 
             if (audioContent) {
+                console.log('TTS successful, emitting translated-audio');
                 // Pipeline Step 5: Send translated audio and subtitles to the other user(s) in session
                 socket.to(sessionCode).emit('translated-audio', {
                     audio: audioContent,
                     subtitle: translatedText,
                     originalSubtitle: transcript
                 });
+            } else {
+                console.log('TTS failed to generate audio content.');
             }
         } catch (error) {
             console.error('Audio Pipeline Error:', error);

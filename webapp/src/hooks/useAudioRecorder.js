@@ -8,6 +8,7 @@ export const useAudioRecorder = (sessionCode, sourceLanguage, targetLanguage) =>
     const stream = useRef(null);
 
     const startRecording = useCallback(async () => {
+        console.log('startRecording called', { sessionCode, sourceLanguage, targetLanguage });
         try {
             stream.current = await navigator.mediaDevices.getUserMedia({
                 audio: {
@@ -16,13 +17,16 @@ export const useAudioRecorder = (sessionCode, sourceLanguage, targetLanguage) =>
                     autoGainControl: true,
                 }
             });
+            console.log('Stream obtained:', stream.current.id);
 
             mediaRecorder.current = new MediaRecorder(stream.current, { mimeType: 'audio/webm' });
 
             mediaRecorder.current.ondataavailable = async (event) => {
+                console.log('MediaRecorder dataavailable, size:', event.data.size);
                 if (event.data.size > 0) {
                     const blob = event.data;
                     const arrayBuffer = await blob.arrayBuffer();
+                    console.log('Emitting audio-chunk', { size: arrayBuffer.byteLength });
 
                     socketService.emit('audio-chunk', {
                         sessionCode,
@@ -36,6 +40,7 @@ export const useAudioRecorder = (sessionCode, sourceLanguage, targetLanguage) =>
             // Record in 500ms chunks as per requirement
             mediaRecorder.current.start(500);
             setIsRecording(true);
+            console.log('MediaRecorder started');
         } catch (error) {
             console.error('Error starting recording:', error);
         }

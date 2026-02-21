@@ -14,7 +14,7 @@ class SarvamService {
         try {
             const formData = new FormData();
             formData.append('file', audioBuffer, { filename: 'audio.wav', contentType: 'audio/wav' });
-            formData.append('model', 'saaras:v1');
+            formData.append('model', 'saaras:v2');
             formData.append('language_code', languageCode);
 
             const response = await axios.post(`${this.baseUrl}/speech-to-text`, formData, {

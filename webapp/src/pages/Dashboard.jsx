@@ -3,7 +3,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import socketService from '../services/socket';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, LogOut, Globe, Clock, Headphones } from 'lucide-react';
+import { Mic, MicOff, LogOut, Globe, Clock, Headphones, Zap } from 'lucide-react';
 
 export default function Dashboard() {
     const { sessionCode } = useParams();
@@ -203,4 +203,3 @@ export default function Dashboard() {
         </div>
     );
 }
-BlackedOnUser: false

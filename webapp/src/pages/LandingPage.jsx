@@ -68,8 +68,8 @@ export default function LandingPage() {
                                     key={lang.code}
                                     onClick={() => setSelectedLanguage(lang.code)}
                                     className={`flex items-center space-x-3 px-4 py-3 rounded-xl border-2 transition-all ${selectedLanguage === lang.code
-                                            ? 'border-primary-500 bg-primary-50 text-primary-700'
-                                            : 'border-white bg-white text-slate-600 hover:border-slate-200'
+                                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                        : 'border-white bg-white text-slate-600 hover:border-slate-200'
                                         }`}
                                 >
                                     <Globe className="w-4 h-4 opacity-50" />
@@ -123,4 +123,3 @@ export default function LandingPage() {
         </div>
     );
 }
-BlackedOnUser: false
