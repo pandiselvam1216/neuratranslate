@@ -103,44 +103,44 @@ export default function Dashboard() {
                 </button>
             </header>
 
-            <main className="flex-1 container mx-auto p-6 flex gap-6">
+            <main className="flex-1 container mx-auto p-4 xl:p-6 flex flex-col xl:flex-row gap-4 xl:gap-6">
                 {/* Left Side: My Controls & Subtitles */}
-                <section className="flex-1 flex flex-col gap-6">
-                    <div className="premium-card flex-1 flex flex-col">
-                        <div className="flex items-center justify-between mb-8">
+                <section className="flex-1 flex flex-col gap-4 xl:gap-6 w-full">
+                    <div className="premium-card flex-1 flex flex-col p-4 xl:p-8">
+                        <div className="flex items-center justify-between mb-6 xl:mb-8">
                             <div className="flex items-center space-x-3 text-slate-900">
                                 <Globe className="w-5 h-5 text-primary-500" />
-                                <span className="font-bold">My Language: {language}</span>
+                                <span className="font-bold text-sm xl:text-base">My Language: {language}</span>
                             </div>
-                            <div className={`p-4 rounded-full transition-all ${isRecording ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-400'}`}>
-                                {isRecording ? <Mic className="w-6 h-6 animate-pulse" /> : <MicOff className="w-6 h-6" />}
+                            <div className={`p-3 xl:p-4 rounded-full transition-all ${isRecording ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-400'}`}>
+                                {isRecording ? <Mic className="w-5 h-5 xl:w-6 xl:h-6 animate-pulse" /> : <MicOff className="w-5 h-5 xl:w-6 xl:h-6" />}
                             </div>
                         </div>
 
-                        <div className="flex-1 bg-slate-50/50 rounded-2xl p-6 border border-slate-100 overflow-y-auto max-h-[400px]">
+                        <div className="flex-1 bg-slate-50/50 rounded-2xl p-4 xl:p-6 border border-slate-100 overflow-y-auto max-h-[300px] xl:max-h-[400px]">
                             <div className="space-y-4">
                                 {subtitles.filter(s => s.type === 'mine').map((s, i) => (
-                                    <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                                        <p className="text-slate-800 font-medium">{s.text}</p>
+                                    <div key={i} className="bg-white p-3 xl:p-4 rounded-xl shadow-sm border border-slate-100">
+                                        <p className="text-slate-800 font-medium text-sm xl:text-base">{s.text}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="mt-8 flex flex-col items-center">
+                        <div className="mt-6 xl:mt-8 flex flex-col items-center">
                             <button
                                 onMouseDown={startRecording}
                                 onMouseUp={stopRecording}
                                 onTouchStart={startRecording}
                                 onTouchEnd={stopRecording}
-                                className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-2xl ${isRecording
+                                className={`w-20 h-20 xl:w-24 xl:h-24 rounded-full flex items-center justify-center transition-all shadow-2xl ${isRecording
                                     ? 'bg-red-500 scale-95 shadow-red-200 ring-8 ring-red-50'
                                     : 'bg-primary-600 hover:bg-primary-500 hover:scale-105 shadow-primary-200'
                                     }`}
                             >
-                                <Mic className="w-10 h-10 text-white" />
+                                <Mic className="w-8 h-8 xl:w-10 xl:h-10 text-white" />
                             </button>
-                            <p className="mt-4 text-sm font-medium text-slate-500">
+                            <p className="mt-4 text-xs xl:text-sm font-medium text-slate-500">
                                 {isRecording ? 'Listening...' : 'Hold to Speak'}
                             </p>
                         </div>
@@ -148,19 +148,19 @@ export default function Dashboard() {
                 </section>
 
                 {/* Right Side: Translation Feed */}
-                <section className="flex-1 flex flex-col gap-6">
-                    <div className="premium-card flex-1 flex flex-col bg-slate-900 text-white">
-                        <div className="flex items-center justify-between mb-8">
+                <section className="flex-1 flex flex-col gap-4 xl:gap-6 w-full">
+                    <div className="premium-card flex-1 flex flex-col bg-slate-900 text-white p-4 xl:p-8">
+                        <div className="flex items-center justify-between mb-6 xl:mb-8">
                             <div className="flex items-center space-x-3 text-white">
                                 <Headphones className="w-5 h-5 text-primary-400" />
-                                <span className="font-bold text-slate-300">Target Language: {targetLanguage}</span>
+                                <span className="font-bold text-sm xl:text-base text-slate-300">Target: {targetLanguage}</span>
                             </div>
-                            <div className={`p-4 rounded-full transition-all ${isTheirsSpeaking ? 'bg-primary-500/20 text-primary-400' : 'bg-slate-800 text-slate-600'}`}>
-                                <Zap className={`w-6 h-6 ${isTheirsSpeaking ? 'animate-pulse' : ''}`} />
+                            <div className={`p-3 xl:p-4 rounded-full transition-all ${isTheirsSpeaking ? 'bg-primary-500/20 text-primary-400' : 'bg-slate-800 text-slate-600'}`}>
+                                <Zap className={`w-5 h-5 xl:w-6 xl:h-6 ${isTheirsSpeaking ? 'animate-pulse' : ''}`} />
                             </div>
                         </div>
 
-                        <div className="flex-1 bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 overflow-y-auto max-h-[400px]">
+                        <div className="flex-1 bg-slate-800/50 rounded-2xl p-4 xl:p-6 border border-slate-700/50 overflow-y-auto max-h-[300px] xl:max-h-[400px]">
                             <div className="space-y-4">
                                 <AnimatePresence>
                                     {subtitles.map((s, i) => (
@@ -168,33 +168,34 @@ export default function Dashboard() {
                                             key={i}
                                             initial={{ opacity: 0, x: 20 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            className={`p-4 rounded-xl border ${s.type === 'theirs'
+                                            className={`p-3 xl:p-4 rounded-xl border ${s.type === 'theirs'
                                                 ? 'bg-primary-600/10 border-primary-500/30'
                                                 : 'bg-slate-700/50 border-slate-600/50 opacity-40'
                                                 }`}
                                         >
-                                            <p className="text-xs text-slate-400 mb-1">{s.type === 'theirs' ? 'Translated' : 'You said'}</p>
-                                            <p className="text-white font-medium">{s.text}</p>
-                                            {s.original && <p className="text-xs text-slate-500 mt-2 italic">Original: {s.original}</p>}
+                                            <p className="text-[10px] xl:text-xs text-slate-400 mb-1">{s.type === 'theirs' ? 'Translated' : 'You said'}</p>
+                                            <p className="text-sm xl:text-base text-white font-medium">{s.text}</p>
+                                            {s.original && <p className="text-[10px] xl:text-xs text-slate-500 mt-2 italic">Original: {s.original}</p>}
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>
                             </div>
                         </div>
 
-                        <div className="mt-8 flex justify-center py-6">
+                        <div className="mt-6 xl:mt-8 flex justify-center py-4 xl:py-6">
                             {isTheirsSpeaking ? (
                                 <div className="flex items-center space-x-1 h-8">
                                     {[1, 2, 3, 4, 5].map(i => (
-                                        <div
+                                        <motion.div
                                             key={i}
-                                            className="w-1 bg-primary-400 rounded-full animate-wave"
-                                            style={{ animationDelay: `${i * 0.1}s`, height: `${Math.random() * 100}%` }}
+                                            animate={{ height: ['20%', '100%', '20%'] }}
+                                            transition={{ repeat: Infinity, duration: 0.5, delay: i * 0.1 }}
+                                            className="w-1 bg-primary-400 rounded-full"
                                         />
                                     ))}
                                 </div>
                             ) : (
-                                <div className="text-slate-500 text-sm italic">Waiting for incoming speech...</div>
+                                <div className="text-slate-500 text-xs xl:text-sm italic text-center w-full">Waiting for incoming speech...</div>
                             )}
                         </div>
                     </div>
