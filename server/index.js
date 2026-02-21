@@ -61,16 +61,18 @@ io.on('connection', (socket) => {
             console.log(`Audio buffer size: ${buffer.length} bytes`);
 
             // Pipeline Step 1: STT
-            console.log('Starting STT...');
+            console.log(`Starting STT for ${sourceLanguage}... Content-length: ${buffer.length}`);
             const transcript = await sarvamService.transcribe(buffer, sourceLanguage);
-            console.log('STT Transcript:', transcript);
+            console.log('STT Success. Transcript:', transcript || '[EMPTY]');
 
             if (!transcript) {
-                console.log('No transcript received from STT.');
+                console.log('No transcript received from STT. Possibly low audio quality or silent capture.');
+                socket.emit('error', 'Speech recognition failed. Please speak louder or closer to the mic.');
                 return;
             }
 
             // Pipeline Step 2: Emit partial transcript
+            console.log(`Emitting transcript to session ${sessionCode}`);
             io.to(sessionCode).emit('partial-transcript', {
                 userId: socket.id,
                 transcript: transcript

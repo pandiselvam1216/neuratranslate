@@ -53,7 +53,7 @@ export default function LandingPage() {
                         <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                             <Zap className="text-white w-6 h-6" />
                         </div>
-                        <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">NEURA<span className="text-primary">TRANS</span></span>
+                        <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">NEURA<span className="text-primary">TRANSLATE</span></span>
                     </div>
                 </header>
 

@@ -3,7 +3,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import socketService from '../services/socket';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, LogOut, Globe, Clock, Headphones, Zap, Wifi, Signal, Volume2, MessageSquare, Stars } from 'lucide-react';
+import { Mic, MicOff, LogOut, Globe, Clock, Zap, Wifi, Signal, Volume2, MessageSquare, Stars } from 'lucide-react';
 
 export default function Dashboard() {
     const { sessionCode } = useParams();
@@ -36,6 +36,13 @@ export default function Dashboard() {
             setConnectionTime(`${mins}:${secs}`);
         }, 1000);
 
+        socketService.on('partial-transcript', ({ userId, transcript }) => {
+            const type = userId === socketService.socket.id ? 'mine' : 'theirs';
+            if (type === 'mine') {
+                setSubtitles(prev => [...prev, { text: transcript, type, id: Date.now() }].slice(-10));
+            }
+        });
+
         socketService.on('translated-audio', ({ audio, subtitle, originalSubtitle }) => {
             audioQueue.current.push({ audio, subtitle });
             playNextInQueue();
@@ -44,6 +51,7 @@ export default function Dashboard() {
 
         return () => {
             clearInterval(timer);
+            socketService.off('partial-transcript');
             socketService.off('translated-audio');
         };
     }, [language, session, navigate]);
@@ -84,7 +92,7 @@ export default function Dashboard() {
                         <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                             <Zap className="text-white w-4 h-4" />
                         </div>
-                        <h2 className="text-xl font-black text-slate-900 tracking-tighter uppercase">NEURA<span className="text-primary">SYNC</span></h2>
+                        <h2 className="text-xl font-black text-slate-900 tracking-tighter uppercase">NEURA<span className="text-primary">TRANSLATE</span></h2>
                     </div>
 
                     <div className="hidden md:flex items-center space-x-6 text-xs font-black uppercase tracking-widest text-slate-400">
@@ -172,19 +180,27 @@ export default function Dashboard() {
                                     onMouseUp={stopRecording}
                                     onTouchStart={startRecording}
                                     onTouchEnd={stopRecording}
-                                    className={`w-28 h-28 rounded-full relative z-10 flex items-center justify-center transition-all duration-300 shadow-2xl active:scale-90 ${isRecording ? 'bg-red-500 scale-95' : 'glow-button border-4 border-white'
-                                        }`}
+                                    className={`w-28 h-28 rounded-full relative z-10 flex items-center justify-center transition-all duration-300 shadow-2xl active:scale-90 ${isRecording ? 'bg-red-500 scale-95' : 'glow-button border-4 border-white'}`}
                                 >
                                     <Mic className="w-12 h-12 text-white" />
                                 </button>
                             </div>
-                            <div className="text-center">
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-1">
-                                    {isRecording ? 'Broadcasting Now' : 'Voice Command Center'}
-                                </p>
-                                <p className="text-sm font-bold text-slate-600">
-                                    {isRecording ? 'Release to Send' : 'Hold to Speak'}
-                                </p>
+                            <div className="text-center h-12 flex flex-col items-center justify-center">
+                                {isRecording ? (
+                                    <>
+                                        <p className="text-xs font-black text-red-500 uppercase tracking-[0.3em] mb-1 animate-pulse">
+                                            Broadcasting Now
+                                        </p>
+                                        <p className="text-sm font-bold text-slate-600">Release to Send</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-1">
+                                            Voice Command Center
+                                        </p>
+                                        <p className="text-sm font-bold text-slate-600">Hold to Speak</p>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

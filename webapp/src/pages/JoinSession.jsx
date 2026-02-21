@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import socketService from '../services/socket';
 import { motion } from 'framer-motion';
-import { Globe, ArrowRight, Zap, ShieldCheck } from 'lucide-react';
+import { Globe, ArrowRight, Zap, ShieldCheck, Stars } from 'lucide-react';
 
 const languages = [
     { code: 'en-IN', name: 'English (India)' },
@@ -72,8 +72,8 @@ export default function JoinSession() {
                                     key={lang.code}
                                     onClick={() => setSelectedLanguage(lang.code)}
                                     className={`relative group flex items-center space-x-4 px-5 py-4 rounded-2xl border-2 transition-all duration-300 text-left ${selectedLanguage === lang.code
-                                            ? 'border-primary bg-primary/5 text-primary shadow-md'
-                                            : 'border-slate-100 bg-white hover:border-slate-300 text-slate-500'
+                                        ? 'border-primary bg-primary/5 text-primary shadow-md'
+                                        : 'border-slate-100 bg-white hover:border-slate-300 text-slate-500'
                                         }`}
                                 >
                                     <div className={`p-2 rounded-lg transition-colors ${selectedLanguage === lang.code ? 'bg-primary/10' : 'bg-slate-50'}`}>
