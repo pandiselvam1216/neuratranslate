@@ -1,72 +1,132 @@
 @import "tailwindcss";
 
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Premium Palette - HSL for harmony */
+  --p-accent: 217 91% 60%;
+  --p-accent-foreground: 210 40% 98%;
+  --p-background: 210 40% 98%;
+  --p-foreground: 222 47% 11%;
+  --p-card: 0 0% 100%;
+  --p-card-foreground: 222 47% 11%;
+  --p-popover: 0 0% 100%;
+  --p-popover-foreground: 222 47% 11%;
+  --p-border: 214 32% 91%;
+  --p-input: 214 32% 91%;
+  --p-ring: 221 83% 53%;
+  --p-radius: 1rem;
 
-  color-scheme: light dark;
-  color: #213547;
-  background-color: #ffffff;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  background-color: hsl(var(--p-background));
+  color: hsl(var(--p-foreground));
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.dark {
+  --p-background: 222 47% 11%;
+  --p-foreground: 210 40% 98%;
+  --p-card: 222 47% 11%;
+  --p-card-foreground: 210 40% 98%;
+  --p-popover: 222 47% 11%;
+  --p-popover-foreground: 210 40% 98%;
+  --p-border: 217 33% 17%;
+  --p-input: 217 33% 17%;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
-}
-
-#root {
-  width: 100%;
+  overflow-x: hidden;
+  background: radial-gradient(circle at top right, hsl(var(--p-accent) / 0.05), transparent),
+    radial-gradient(circle at bottom left, hsl(var(--p-accent) / 0.05), transparent);
 }
 
 @theme {
-  --color-primary-50: #f0f9ff;
-  --color-primary-100: #e0f2fe;
-  --color-primary-200: #bae6fd;
-  --color-primary-300: #7dd3fc;
-  --color-primary-400: #38bdf8;
-  --color-primary-500: #0ea5e9;
-  --color-primary-600: #0284c7;
-  --color-primary-700: #0369a1;
-  --color-primary-800: #075985;
-  --color-primary-900: #0c4a6e;
+  --color-primary: hsl(var(--p-accent));
+  --color-page: hsl(var(--p-background));
+  --radius-xl: var(--p-radius);
 
-  --animate-wave: wave 1s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-wave: wave 1.2s ease-in-out infinite;
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes pulse-slow {
+
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+  }
 
   @keyframes wave {
 
     0%,
     100% {
-      transform: scaleY(0.5);
+      transform: scaleY(0.4);
+      opacity: 0.5;
     }
 
     50% {
-      transform: scaleY(1.5);
+      transform: scaleY(1.2);
+      opacity: 1;
     }
   }
 }
 
 @utility glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: hsl(var(--p-card) / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--p-border) / 0.5);
+}
+
+@utility glass-dark {
+  background: hsl(222 47% 11% / 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid hsl(217 33% 17% / 0.8);
 }
 
 .premium-card {
-  @apply glass rounded-2xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+  @apply glass rounded-xl xl:rounded-3xl shadow-2xl p-6 xl:p-10 transition-all duration-500 border border-white/20;
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+}
+
+.premium-card:hover {
+  @apply -translate-y-2 shadow-[0_20px_50px_rgba(8, _112, _184, _0.1)];
+  border-color: hsl(var(--p-accent) / 0.3);
 }
 
 .gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 font-bold;
+  background: linear-gradient(135deg, hsl(var(--p-accent)), #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-BlackedOnUser: false
+.glow-button {
+  @apply relative overflow-hidden transition-all duration-300 active:scale-95;
+  background: linear-gradient(135deg, hsl(var(--p-accent)), #6366f1);
+  box-shadow: 0 4px 15px hsl(var(--p-accent) / 0.3);
+}
+
+.glow-button:hover {
+  box-shadow: 0 8px 25px hsl(var(--p-accent) / 0.5);
+  transform: translateY(-2px);
+}
