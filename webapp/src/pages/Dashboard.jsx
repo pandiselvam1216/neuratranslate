@@ -38,10 +38,10 @@ export default function Dashboard() {
         }, 1000);
 
         socketService.on('partial-transcript', ({ userId, transcript }) => {
-            const type = userId === socketService.socket.id ? 'mine' : 'theirs';
-            if (type === 'mine') {
-                setSubtitles(prev => [...prev, { text: transcript, type, id: Date.now() }].slice(-10));
-            }
+            const type = userId === (socketService.socket?.id) ? 'mine' : 'theirs';
+            console.log('Partial transcript:', { type, transcript });
+            // For 'theirs', we show it so they know a message is coming
+            setSubtitles(prev => [...prev.filter(s => s.id !== 'temp'), { text: transcript, type, id: 'temp' }].slice(-10));
         });
 
         socketService.on('translated-audio', ({ audio, subtitle, originalSubtitle }) => {
@@ -60,9 +60,16 @@ export default function Dashboard() {
     const playNextInQueue = async () => {
         if (isPlaying.current || audioQueue.current.length === 0) return;
 
+        const item = audioQueue.current.shift();
+        if (!item || !item.audio) {
+            console.log('Skipping audio playback for item:', item?.subtitle);
+            playNextInQueue();
+            return;
+        }
+
         isPlaying.current = true;
         setIsTheirsSpeaking(true);
-        const { audio } = audioQueue.current.shift();
+        const { audio } = item;
 
         const audioObj = new Audio(`data:audio/wav;base64,${audio}`);
         audioObj.onended = () => {
