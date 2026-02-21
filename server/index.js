@@ -69,13 +69,21 @@ io.on('connection', (socket) => {
             console.log('Translated Text:', translatedText);
 
             // Pipeline Step 3: TTS
-            console.log('Starting TTS...');
+            console.log(`Starting TTS for ${translatedText} in ${targetLanguage}...`);
             const audioContent = await sarvamService.synthesize(translatedText, targetLanguage);
 
             if (audioContent) {
-                console.log('TTS successful, emitting translated-audio');
+                console.log(`TTS successful for ${translatedText}, emitting translated-audio to others in ${sessionCode}`);
                 socket.to(sessionCode).emit('translated-audio', {
                     audio: audioContent,
+                    subtitle: translatedText,
+                    originalSubtitle: text
+                });
+            } else {
+                console.warn(`TTS failed or returned empty for: ${translatedText}`);
+                // Fallback: send just subtitles if TTS fails
+                socket.to(sessionCode).emit('translated-audio', {
+                    audio: null,
                     subtitle: translatedText,
                     originalSubtitle: text
                 });
