@@ -3,7 +3,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import socketService from '../services/socket';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, LogOut, Globe, Clock, Headphones, Zap, Wifi, Signal, Volume2 } from 'lucide-react';
+import { Mic, MicOff, LogOut, Globe, Clock, Headphones, Zap, Wifi, Signal, Volume2, MessageSquare, Stars } from 'lucide-react';
 
 export default function Dashboard() {
     const { sessionCode } = useParams();
@@ -216,8 +216,8 @@ export default function Dashboard() {
                                                 initial={{ opacity: 0, x: 20 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 className={`p-6 rounded-[2rem] border transition-all duration-500 ${s.type === 'theirs'
-                                                        ? 'bg-primary/10 border-primary/20 text-white'
-                                                        : 'bg-slate-800/50 border-white/5 opacity-30 text-slate-400 grayscale'
+                                                    ? 'bg-primary/10 border-primary/20 text-white'
+                                                    : 'bg-slate-800/50 border-white/5 opacity-30 text-slate-400 grayscale'
                                                     }`}
                                             >
                                                 <div className="flex items-center space-x-2 mb-3">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import socketService from '../services/socket';
 import { QRCodeSVG } from 'qrcode.react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Globe, ArrowRight, Zap, Stars, Shield, Cpu, MessageSquare } from 'lucide-react';
+import { Mic, Globe, ArrowRight, Zap, Stars, Shield, Cpu, MessageSquare, ShieldCheck } from 'lucide-react';
 
 const languages = [
     { code: 'en-IN', name: 'English (India)' },
@@ -90,8 +90,8 @@ export default function LandingPage() {
                                         key={lang.code}
                                         onClick={() => setSelectedLanguage(lang.code)}
                                         className={`group relative flex flex-col p-4 rounded-2xl border-2 text-left transition-all duration-300 ${selectedLanguage === lang.code
-                                                ? 'border-primary bg-primary/5 text-primary shadow-lg'
-                                                : 'border-slate-200 bg-white hover:border-primary/50 text-slate-500'
+                                            ? 'border-primary bg-primary/5 text-primary shadow-lg'
+                                            : 'border-slate-200 bg-white hover:border-primary/50 text-slate-500'
                                             }`}
                                     >
                                         <Globe className={`w-5 h-5 mb-2 transition-transform group-hover:rotate-12 ${selectedLanguage === lang.code ? 'text-primary' : 'text-slate-400'}`} />
