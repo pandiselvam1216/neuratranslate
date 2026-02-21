@@ -3,7 +3,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import socketService from '../services/socket';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, LogOut, Globe, Clock, Zap, Wifi, Signal, Volume2, MessageSquare, Stars } from 'lucide-react';
+import { Mic, MicOff, LogOut, Globe, Clock, Zap, Wifi, Signal, Volume2, MessageSquare, Stars, Send } from 'lucide-react';
 
 export default function Dashboard() {
     const { sessionCode } = useParams();
@@ -15,6 +15,7 @@ export default function Dashboard() {
     const [subtitles, setSubtitles] = useState([]); // { text, type: 'mine' | 'theirs' }
     const [isTheirsSpeaking, setIsTheirsSpeaking] = useState(false);
     const [connectionTime, setConnectionTime] = useState('00:00');
+    const [typedMessage, setTypedMessage] = useState('');
 
     const audioQueue = useRef([]);
     const isPlaying = useRef(false);
@@ -81,6 +82,19 @@ export default function Dashboard() {
     const handleEndSession = () => {
         socketService.emit('end-session', { sessionCode });
         navigate('/');
+    };
+
+    const handleSendText = (e) => {
+        if (e) e.preventDefault();
+        if (!typedMessage.trim()) return;
+
+        socketService.emit('text-input', {
+            sessionCode,
+            text: typedMessage,
+            sourceLanguage: language,
+            targetLanguage
+        });
+        setTypedMessage('');
     };
 
     return (
@@ -166,41 +180,63 @@ export default function Dashboard() {
                             </div>
                         </div>
 
-                        <div className="mt-8 flex flex-col items-center space-y-6">
-                            <div className="relative">
-                                {isRecording && (
-                                    <motion.div
-                                        animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.1, 0.3] }}
-                                        transition={{ repeat: Infinity, duration: 2 }}
-                                        className="absolute inset-0 bg-red-500 rounded-full"
-                                    />
-                                )}
+                        <div className="mt-auto px-6 pb-6 space-y-6">
+                            <form onSubmit={handleSendText} className="relative group">
+                                <input
+                                    type="text"
+                                    value={typedMessage}
+                                    onChange={(e) => setTypedMessage(e.target.value)}
+                                    placeholder="Type a message to translate..."
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-6 pr-14 text-sm font-bold text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                />
                                 <button
-                                    onMouseDown={startRecording}
-                                    onMouseUp={stopRecording}
-                                    onTouchStart={startRecording}
-                                    onTouchEnd={stopRecording}
-                                    className={`w-28 h-28 rounded-full relative z-10 flex items-center justify-center transition-all duration-300 shadow-2xl active:scale-90 ${isRecording ? 'bg-red-500 scale-95' : 'glow-button border-4 border-white'}`}
+                                    type="submit"
+                                    disabled={!typedMessage.trim()}
+                                    className={`absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-xl transition-all ${typedMessage.trim()
+                                        ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95'
+                                        : 'bg-slate-100 text-slate-300'
+                                        }`}
                                 >
-                                    <Mic className="w-12 h-12 text-white" />
+                                    <Send className="w-4 h-4" />
                                 </button>
-                            </div>
-                            <div className="text-center h-12 flex flex-col items-center justify-center">
-                                {isRecording ? (
-                                    <>
-                                        <p className="text-xs font-black text-red-500 uppercase tracking-[0.3em] mb-1 animate-pulse">
-                                            Broadcasting Now
-                                        </p>
-                                        <p className="text-sm font-bold text-slate-600">Release to Send</p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-1">
-                                            Voice Command Center
-                                        </p>
-                                        <p className="text-sm font-bold text-slate-600">Hold to Speak</p>
-                                    </>
-                                )}
+                            </form>
+
+                            <div className="flex flex-col items-center space-y-6">
+                                <div className="relative">
+                                    {isRecording && (
+                                        <motion.div
+                                            animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.1, 0.3] }}
+                                            transition={{ repeat: Infinity, duration: 2 }}
+                                            className="absolute inset-0 bg-red-500 rounded-full"
+                                        />
+                                    )}
+                                    <button
+                                        onMouseDown={startRecording}
+                                        onMouseUp={stopRecording}
+                                        onTouchStart={startRecording}
+                                        onTouchEnd={stopRecording}
+                                        className={`w-28 h-28 rounded-full relative z-10 flex items-center justify-center transition-all duration-300 shadow-2xl active:scale-90 ${isRecording ? 'bg-red-500 scale-95' : 'glow-button border-4 border-white'}`}
+                                    >
+                                        <Mic className="w-12 h-12 text-white" />
+                                    </button>
+                                </div>
+                                <div className="text-center h-12 flex flex-col items-center justify-center">
+                                    {isRecording ? (
+                                        <>
+                                            <p className="text-xs font-black text-red-500 uppercase tracking-[0.3em] mb-1 animate-pulse">
+                                                Broadcasting Now
+                                            </p>
+                                            <p className="text-sm font-bold text-slate-600">Release to Send</p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-1">
+                                                Voice Command Center
+                                            </p>
+                                            <p className="text-sm font-bold text-slate-600">Hold to Speak</p>
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

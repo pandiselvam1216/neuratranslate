@@ -54,6 +54,37 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('text-input', async ({ sessionCode, text, sourceLanguage, targetLanguage }) => {
+        console.log(`Received text input for session ${sessionCode} from ${sourceLanguage} to ${targetLanguage}: ${text}`);
+        try {
+            // Pipeline Step 1: Emit partial transcript (self-visibility)
+            io.to(sessionCode).emit('partial-transcript', {
+                userId: socket.id,
+                transcript: text
+            });
+
+            // Pipeline Step 2: Translate
+            console.log(`Translating to ${targetLanguage}...`);
+            const translatedText = await sarvamService.translate(text, sourceLanguage, targetLanguage);
+            console.log('Translated Text:', translatedText);
+
+            // Pipeline Step 3: TTS
+            console.log('Starting TTS...');
+            const audioContent = await sarvamService.synthesize(translatedText, targetLanguage);
+
+            if (audioContent) {
+                console.log('TTS successful, emitting translated-audio');
+                socket.to(sessionCode).emit('translated-audio', {
+                    audio: audioContent,
+                    subtitle: translatedText,
+                    originalSubtitle: text
+                });
+            }
+        } catch (error) {
+            console.error('Text Pipeline Error:', error);
+        }
+    });
+
     socket.on('audio-chunk', async ({ sessionCode, audio, sourceLanguage, targetLanguage }) => {
         console.log(`Received audio chunk for session ${sessionCode} from ${sourceLanguage} to ${targetLanguage}`);
         try {
